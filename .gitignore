@@ -1,0 +1,21 @@
+data/
+dist/
+build/
+
+# IDE
+nbproject
+.idea
+.project
+.settings
+.project
+.classpath
+eclipse-build
+
+# TEMP
+*~
+.DS_Store
+
+# Package Files #
+*.jar
+*.war
+*.ear
