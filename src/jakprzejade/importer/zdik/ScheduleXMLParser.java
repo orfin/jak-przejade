@@ -75,7 +75,7 @@ public class ScheduleXMLParser extends DefaultHandler {
         if (qName.equalsIgnoreCase("linia")) {
             vehicle = new Vehicle(
                     attributes.getValue("nazwa"), 
-                    Vehicle.VehicleType.TRAM, 
+                    Vehicle.VehicleType.TRAM,   // todo how to decide if bus or tram?
                     getLineType(attributes.getValue("typ"))
             );
             

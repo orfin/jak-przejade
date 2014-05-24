@@ -7,9 +7,7 @@ package jakprzejade.importer.zdik;
 import jakprzejade.importer.Importer;
 import jakprzejade.importer.Repository;
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.logging.Level;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -21,6 +19,8 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
  */
 public class SchedulesParser {
 
+    private static final String FILE_IGNORED = "rozklad.xml";
+    
     private String basePath;
     private Repository repo;
 
@@ -35,7 +35,7 @@ public class SchedulesParser {
         for (File file : scheduleFiles) {
             Importer.getLogger().log(Level.INFO, "Parsing file \"{0}\"", file.getName());
             
-            if (file.getName().equalsIgnoreCase("rozklad.xml")) {
+            if (file.getName().equalsIgnoreCase(FILE_IGNORED)) {
                 Importer.getLogger().log(Level.INFO, "Passing");
                 continue;
             }

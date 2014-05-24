@@ -24,7 +24,7 @@ public class JakPrzejade {
         System.out.println(sd.getTimes().toString());
         
         ZdikImporter importer = new ZdikImporter();
-        Logger.getLogger("importer").setLevel(Level.OFF);
+//        Logger.getLogger("importer").setLevel(Level.OFF);
         
         Repository repo = importer.importRepository();
         
