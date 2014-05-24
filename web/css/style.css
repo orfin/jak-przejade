@@ -1,0 +1,130 @@
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+}
+
+body, html {
+  height: 100%;
+}
+
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+
+/*
+ * Sidebar
+ */
+
+
+/* Sidebar navigation */
+.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.nav-sidebar > .active > a {
+  color: #fff;
+  background-color: #428bca;
+}
+
+/*
+ * Main content
+ */
+
+.main {
+  padding: 20px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+.main .page-header {
+  margin-top: 0;
+}
+
+
+/*
+ * Placeholder dashboard ideas
+ */
+
+
+#sidebar {
+    min-width: 300px;
+    width: 100%;
+    position: fixed;
+    top: 150px;
+    bottom: 0;
+    left: 0;
+    z-index: 90;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+
+@media (min-width: 768px) {
+    #sidebar {
+        width: 20%;
+    }
+}
+
+#sidebar .glyphicon {
+    font-size: 12px;
+}
+
+#sidebar .dl-horizontal dt {
+    width: 45px;
+    text-align: left;
+}
+
+#sidebar .dl-horizontal dd {
+    margin-left: 50px;
+}
+
+
+#map-canvas {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0px;
+    /*top: 0px;*/
+    /*margin-top: 50px;*/
+}
+
+#search {
+    padding-bottom: 10px;
+}
+
+#search #date {
+    width: 100px;
+}
+
+#search #from, #search #to {
+    width: 250px;
+}
+
+#search #time {
+    width: 55px;
+}
+
+#search .row {
+    margin: 0;
+    padding-bottom: 5px;
+}
