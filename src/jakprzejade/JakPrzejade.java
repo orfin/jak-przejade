@@ -23,12 +23,7 @@ public class JakPrzejade {
         sd.addTime(st);
         System.out.println(sd.getTimes().toString());
         
-        ZdikImporter importer = new ZdikImporter();
-//        Logger.getLogger("importer").setLevel(Level.OFF);
-        
-        Repository repo = importer.importRepository();
-        
-        System.out.println(repo.busStops.get("17310"));
+        RepositoryHandler.initRepository();
         
 //        for (BusStop busStop : repo.busStops.values()) {
 //            System.out.println(busStop);
