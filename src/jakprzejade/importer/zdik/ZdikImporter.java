@@ -22,7 +22,10 @@ import java.util.logging.Logger;
 public class ZdikImporter extends Importer {
 
     private static final String BASE_PATH = jakprzejade.Configuration.IMPORTER_ZDIK_PATH;
-    private static final String URL = "http://www.um.wroc.pl/zdikzip/rozklady_xml.zip";
+    private static final String URL_SCHEDULES = "http://www.um.wroc.pl/zdikzip/rozklady_xml.zip";
+    private static final String URL_LOCATIONS = "http://geoportal.wroclaw.pl/www/pliki/KomunikacjaZbiorowa/SlupkiWspolrzedne.txt";
+    
+    
     private static final String DATE_FORMAT = "yyyyMMdd-HHmmss";
 
     @Override
@@ -31,13 +34,14 @@ public class ZdikImporter extends Importer {
 
         String outputName = getOutputName();
         String zipName = outputName + ".zip";
+        String locationsName = outputName + ".txt";
 
         makeDir();
 
-        getLogger().log(Level.INFO, "Downloading from \"{0}\" to \"{1}\"", new String[]{URL, zipName});
+        getLogger().log(Level.INFO, "Downloading schedules from \"{0}\" to \"{1}\"", new String[]{URL_SCHEDULES, zipName});
 
         timeStart = System.currentTimeMillis();
-        org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL), new File(zipName));
+        org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL_SCHEDULES), new File(zipName));
 
         getLogger().log(Level.INFO, "Downloading completed in {0} ms", "" + getTimeTotal(timeStart));
 
@@ -57,6 +61,23 @@ public class ZdikImporter extends Importer {
 
         getLogger().log(Level.INFO, "Repository completed in {0} ms \r\nBusStops: {1}, Vehicles: {2}, Routes: {3}", new String[]{"" + getTimeTotal(timeStart), "" + repo.busStops.size(), "" + repo.vehicles.size(), "" + repo.routes.size()});
 
+        
+        getLogger().log(Level.INFO, "Downloading bus stops locations from \"{0}\" to \"{1}\"", new String[]{URL_LOCATIONS, locationsName});
+
+        timeStart = System.currentTimeMillis();
+        org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL_LOCATIONS), new File(locationsName));
+
+        getLogger().log(Level.INFO, "Downloading completed in {0} ms", "" + getTimeTotal(timeStart));
+        
+        
+        getLogger().log(Level.INFO, "Starting setting locations of bus stops...");
+
+        timeStart = System.currentTimeMillis();
+        new BusStopsLocationsParser(locationsName, repo).parseFile();
+
+        getLogger().log(Level.INFO, "Setting locations completed in {0} ms", new String[]{"" + getTimeTotal(timeStart)});
+
+        
         return repo;
     }
 
@@ -69,7 +90,7 @@ public class ZdikImporter extends Importer {
         Date date = new Date();
 
         return dateFormat.format(date);
-//        return "20140524-130056";
+//        return "20140531-163338";
     }
 
     private void makeDir() {

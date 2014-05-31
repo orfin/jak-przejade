@@ -10,6 +10,7 @@ public class BusStop {
     private String id;
     private String name;
     private String streetName;
+    private GeoPoint location;
     
     // String is a vehicle identifier
     private HashMap<String, Stop> stops;
@@ -46,8 +47,21 @@ public class BusStop {
         stops.put(stop.getVehicle().getName(), stop);
     }
 
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
+    }
+
+    public void setLocation(double longitude, double latitude) {
+        this.location = new GeoPoint(longitude, latitude);
+    }
+
     @Override
     public String toString() {
-        return "BusStop{" + "id=" + id + ", name=" + name + ", streetName=" + streetName + ", stops=" + stops + '}';
+        return "BusStop{" + "id=" + id + ", name=" + name + ", streetName=" + streetName + ", location=" + location + ", stops=" + stops + '}';
     }
+    
 }
