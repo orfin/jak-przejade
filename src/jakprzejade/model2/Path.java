@@ -11,7 +11,7 @@ public class Path {
     public DayType dayType;
     public String line; //line identifier
     public int startTime; //time of day in minutes
-    public int last; //how long it takes to get to target node
+    public int endTime;  //time of day in minutes
     public String fromId;
     public String toId;
 }

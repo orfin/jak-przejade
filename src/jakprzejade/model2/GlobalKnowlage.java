@@ -9,9 +9,10 @@ import java.util.List;
  * @author KonradOliwer
  */
 public class GlobalKnowlage {
+
     public final static HashMap<String, Node> nodesMap = new HashMap();
-    
-    public static List getNodeList(){
+
+    public static List<Node> getNodeList() {
         return new ArrayList(nodesMap.values());
     }
 }

@@ -18,7 +18,7 @@ public class Node {
     private List<Path> incoming;
     private List<Path> comingout;
 
-    private Node(String id, String name, GeoPoint geoPoint) {
+    public Node(String id, String name, GeoPoint geoPoint) {
         this.id = id;
         this.geoPoint = geoPoint;
         position = new Position(geoPoint);

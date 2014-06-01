@@ -15,12 +15,12 @@ public class Position {
     public double x; //[m]
     public double y; //[m]
 
-    Position(int x, int y) {
+    public Position(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    Position(GeoPoint p) {
+    public Position(GeoPoint p) {
         x = (base.getLongitude() - p.getLongitude()) * xFactor;
         y = (base.getLatitude() - p.getLatitude()) * yFactor;
     }
