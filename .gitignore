@@ -1,6 +1,7 @@
 data/
 dist/
 build/
+nbproject/
 
 # IDE
 nbproject
@@ -16,6 +17,5 @@ eclipse-build
 .DS_Store
 
 # Package Files #
-*.jar
 *.war
 *.ear
