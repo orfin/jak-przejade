@@ -1,8 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jakprzejade.dto;
+
+import java.util.ArrayList;
 
 /**
  * Here representation of found route goes
@@ -11,4 +9,5 @@ package jakprzejade.dto;
  */
 public class FindRouteResponse {
     
+    public ArrayList<Route> routes = new ArrayList<Route>();
 }
