@@ -2,12 +2,10 @@ package jakprzejade.model2;
 
 import jakprzejade.model.GeoPoint;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Container representing place you can stop (eg. bus stop "Halera")
+ * Container representing place you can stop (ex. bus stop "Halera")
  *
  * @author KonradOliwer
  */

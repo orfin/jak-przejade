@@ -1,6 +1,7 @@
 package jakprzejade.model2;
 
 /**
+ * Path between two nodes
  *
  * @author KonradOliwer
  */
