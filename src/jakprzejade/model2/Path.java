@@ -36,8 +36,20 @@ public class Path {
     public Path(String destination, int timeCost) {
         this(DayType.ANY, destination, BY_FOOT_NAME, timeCost, ANY_TIME, ANY_TIME, true);
     }
-    
-    public int getVisitTime(int startTime){
+
+    public int getVisitTime(int startTime) {
         return byFoot ? startTime + timeCost : endTime;
+    }
+
+    public static int toUnifiedTime(int hour, int minute) {
+        return hour * 60 + minute;
+    }
+
+    public static String fromUnifiedTime(int time) {
+        return String.format("%d:%d", time / 60, time % 60);
+    }
+
+    public static int timeDifference(int startTime, int endTime) {
+        return startTime < endTime ? endTime - startTime : 1440 - startTime + endTime;
     }
 }
