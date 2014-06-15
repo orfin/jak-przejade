@@ -5,7 +5,6 @@ import jakprzejade.model2.DayType;
 import jakprzejade.model2.GlobalKnowlage;
 import jakprzejade.model2.Node;
 import jakprzejade.model2.Path;
-import jakprzejade.model2.Position;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -21,41 +20,55 @@ public class Knowledge {
     private static final String END_NODE_NAME = "Koniec trasy";
     private static final String START_NODE_ID = "START";
     private static final String END_NODE_ID = "END";
-    private HashMap<String, Node> nodesMap = new HashMap();
-    private ArrayList<Node> nodes = new ArrayList();
+    private final FindRouteRequest frr;
+    private final HashMap<String, AlgorithmNode> nodesMap;
+    private final ArrayList<AlgorithmNode> nodes;
     private boolean possibleDayChange;
     private DayType startDayType;
     private DayType maxEndDayType;
     private int startTime;
     private int maxEndTime;
-    private Node start;
-    private Node end;
+    private AlgorithmNode start;
+    private AlgorithmNode end;
 
     public Knowledge(FindRouteRequest frr) {
+        this.frr = frr;
+        nodesMap = new HashMap();
+        nodes = new ArrayList();
+    }
+
+    public void init() {
         addStartAndEndNode(frr);
-        addSutableNodes(frr);
+        addSutableNodes();
         addTimeFrames(frr);
-        addSutablePaths();
     }
 
     private void addStartAndEndNode(FindRouteRequest frr) {
-        start = new Node(START_NODE_ID, START_NODE_NAME, frr.from);
+        start = new AlgorithmNode(new Node(START_NODE_ID, START_NODE_NAME, frr.from), this);
+        start.setBestGetHereTime(startTime);
         nodesMap.put(start.getId(), start);
         nodes.add(start);
-        end = new Node(START_NODE_ID, START_NODE_NAME, frr.to);
+        end = new AlgorithmNode(new Node(END_NODE_ID, END_NODE_NAME, frr.to), this);
         nodesMap.put(end.getId(), end);
         nodes.add(end);
     }
 
-    private void addSutableNodes(FindRouteRequest frr) {
+    private void addSutableNodes() {
         Elipse searchArea = new Elipse(start.getPosition(), end.getPosition());
         for (Node node : GlobalKnowlage.getNodeList()) {
             if (nodeIsInElipse(searchArea, node)) {
-                Node newNode = cloneWithoutPaths(node);
-                nodesMap.put(newNode.getId(), newNode);
-                nodes.add(newNode);
+                AlgorithmNode algorithmNode = new AlgorithmNode(node, this);
+                algorithmNode.setPathToEnd(getEdgeByFootBetween(algorithmNode, end));
+                nodesMap.put(algorithmNode.getId(), algorithmNode);
+                nodes.add(algorithmNode);
+                start.addPaths(getEdgeByFootBetween(algorithmNode, start));
             }
         }
+    }
+
+    private Path getEdgeByFootBetween(AlgorithmNode begining, AlgorithmNode destination) {
+        return new Path(destination.getId(), DynamicProgrammingUtils.calculateByFoot(
+                begining.getPosition(), destination.getPosition()));
     }
 
     private void addTimeFrames(FindRouteRequest frr) {
@@ -64,76 +77,17 @@ public class Knowledge {
                 .calculateByFoot(start.getPosition(), end.getPosition());
         possibleDayChange = maxEndTime > 1440;
 
-        startDayType = DynamicProgrammingUtils.getDayType(frr.date.get(Calendar.DAY_OF_WEEK));
+        startDayType = DayType.getDayType(frr.date.get(Calendar.DAY_OF_WEEK));
         if (possibleDayChange) {
             maxEndTime -= 1440;
-            maxEndDayType = DynamicProgrammingUtils.getDayType(
-                    frr.date.get(Calendar.DAY_OF_WEEK) + 1);
+            maxEndDayType = DayType.getDayType(frr.date.get(Calendar.DAY_OF_WEEK) + 1);
         } else {
             maxEndDayType = startDayType;
         }
     }
 
-    private void addSutablePaths() {
-        HashMap<String, Node> globalMap = GlobalKnowlage.nodesMap;
-        for (Node node : nodes) {
-            Node globalNode = globalMap.get(node.getId());
-            for (Path path : globalNode.getIncoming()) {
-                if (matchesRequiraments(path)) {
-                    node.getIncoming().add(path);
-                }
-            }
-            for (Path path : globalNode.getComingout()) {
-                if (matchesRequiraments(path)) {
-                    node.getIncoming().add(path);
-                }
-            }
-        }
-
-    }
-
     private boolean nodeIsInElipse(Elipse e, Node node) {
         return e.isInElipse(node.getPosition());
-    }
-
-    private Node cloneWithoutPaths(Node node) {
-        return new Node(node.getId(), node.getName(), node.getGeoPoint());
-    }
-
-    private boolean matchesRequiraments(Path path) {
-        if (possibleDayChange) {
-            return nodesMap.containsKey(path.toId)
-                    && ((path.dayType == startDayType && path.startTime >= startTime)
-                    || (path.dayType == maxEndDayType && path.endTime < maxEndTime));
-        }
-        return nodesMap.containsKey(path.toId) && path.dayType == startDayType
-                && path.startTime >= startTime && path.endTime < maxEndTime;
-    }
-
-    private class Elipse {
-
-        final Position center;
-        final double a;
-        final double b;
-
-        Elipse(Position start, Position end) {
-            center = new Position((start.x + end.x) / 2, (start.y + end.y) / 2);
-            a = DynamicProgrammingUtils.distance(start, end);
-            b = a / 2;
-        }
-
-        boolean isInElipse(Position p) {
-            return 1 == Math.pow(p.x - center.x, 2) / Math.pow(a, 2)
-                    + Math.pow(p.y - center.y, 2) / Math.pow(b, 2);
-        }
-    }
-
-    public HashMap<String, Node> getNodesMap() {
-        return nodesMap;
-    }
-
-    public ArrayList<Node> getNodes() {
-        return nodes;
     }
 
     public boolean isPossibleDayChange() {
@@ -154,6 +108,22 @@ public class Knowledge {
 
     public int getMaxEndTime() {
         return maxEndTime;
+    }
+
+    public HashMap<String, AlgorithmNode> getNodesMap() {
+        return nodesMap;
+    }
+
+    public ArrayList<AlgorithmNode> getNodes() {
+        return nodes;
+    }
+
+    public AlgorithmNode getStart() {
+        return start;
+    }
+
+    public AlgorithmNode getEnd() {
+        return end;
     }
 
 }

@@ -1,6 +1,5 @@
 package jakprzejade.dynamicprogramming;
 
-import jakprzejade.model2.DayType;
 import jakprzejade.model2.Position;
 
 /**
@@ -15,16 +14,5 @@ public class DynamicProgrammingUtils {
 
     public static int calculateByFoot(Position p1, Position p2) {
         return (int) Math.round(distance(p1, p2) / 81);
-    }
-
-    public static DayType getDayType(int weekDayNumber) {
-        switch (weekDayNumber) {
-            case 6:
-                return DayType.SUTURDAY;
-            case 7:
-                return DayType.SUNDAY;
-            default:
-                return DayType.WEEK_DAY;
-        }
     }
 }
