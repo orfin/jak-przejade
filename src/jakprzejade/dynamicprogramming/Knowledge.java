@@ -2,7 +2,7 @@ package jakprzejade.dynamicprogramming;
 
 import jakprzejade.dto.FindRouteRequest;
 import jakprzejade.model2.DayType;
-import jakprzejade.model2.GlobalKnowlage;
+import jakprzejade.model2.GlobalKnowledge;
 import jakprzejade.model2.Node;
 import jakprzejade.model2.Path;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class Knowledge {
 
     private void addSutableNodes() {
         Elipse searchArea = new Elipse(start.getPosition(), end.getPosition());
-        for (Node node : GlobalKnowlage.getNodeList()) {
+        for (Node node : GlobalKnowledge.getNodeList()) {
             if (nodeIsInElipse(searchArea, node)) {
                 AlgorithmNode algorithmNode = new AlgorithmNode(node, this);
                 algorithmNode.setPathToEnd(getEdgeByFootBetween(algorithmNode, end));

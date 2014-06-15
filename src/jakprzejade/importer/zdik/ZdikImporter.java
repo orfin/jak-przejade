@@ -13,7 +13,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -90,7 +89,6 @@ public class ZdikImporter extends Importer {
         Date date = new Date();
 
         return dateFormat.format(date);
-//        return "20140531-163338";
     }
 
     private void makeDir() {

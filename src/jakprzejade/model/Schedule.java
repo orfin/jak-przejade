@@ -1,5 +1,6 @@
 package jakprzejade.model;
 
+import jakprzejade.model2.DayType;
 import java.util.HashMap;
 
 /**
@@ -8,15 +9,15 @@ import java.util.HashMap;
  */
 public class Schedule {
     
-    private ScheduleType type;
+    private DayType type;
     private HashMap<Integer, ScheduleTime> times;
 
-    public Schedule(ScheduleType type) {
+    public Schedule(DayType type) {
         this.type = type;
         this.times = new HashMap<Integer, ScheduleTime>();
     }
 
-    public ScheduleType getType() {
+    public DayType getType() {
         return type;
     }
 
@@ -28,11 +29,6 @@ public class Schedule {
         times.put(time.getHour(), time);
     }
     
-    public enum ScheduleType {
-
-        WORKING_DAYS, SATURDAY, SUNDAY
-    }
-
     @Override
     public String toString() {
         return "Schedule{" + "type=" + type + ", times=" + times + '}';

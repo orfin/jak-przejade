@@ -4,8 +4,13 @@
  */
 package jakprzejade;
 
+import jakprzejade.dynamicprogramming.Knowledge;
 import jakprzejade.importer.Repository;
+import jakprzejade.importer.RepositoryToKnowledgeConverter;
 import jakprzejade.importer.zdik.ZdikImporter;
+import jakprzejade.model2.GlobalKnowledge;
+import jakprzejade.model2.Node;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +32,12 @@ public class RepositoryHandler {
 
         try {
             repository = importer.importRepository();
+            RepositoryToKnowledgeConverter converter = new RepositoryToKnowledgeConverter(repository);
+            
+            HashMap<String, Node> nodesMap = converter.convert();
+            
+            GlobalKnowledge.nodesMap.clear();
+            GlobalKnowledge.nodesMap.putAll(nodesMap);
 
             return true;
         } catch (Exception ex) {

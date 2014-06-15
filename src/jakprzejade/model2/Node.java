@@ -41,6 +41,11 @@ public class Node {
         return position;
     }
 
+    public void setGeoPoint(double longitude, double latitude) {
+        this.geoPoint.setLatitude(latitude);
+        this.geoPoint.setLongitude(longitude);
+    }
+    
     public GeoPoint getGeoPoint() {
         return geoPoint;
     }

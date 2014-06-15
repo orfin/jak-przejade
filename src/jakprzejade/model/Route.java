@@ -7,8 +7,8 @@ import java.util.LinkedList;
  * @author Antoni Orfin <orfin@poczta.fm>
  */
 public class Route {
-    private Vehicle vehicle;
-    private LinkedList<Stop> stops;
+    public Vehicle vehicle;
+    public LinkedList<Stop> stops;
 
     public Route(Vehicle vehicle) {
         this.vehicle = vehicle;

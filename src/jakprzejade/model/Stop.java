@@ -1,6 +1,6 @@
 package jakprzejade.model;
 
-import jakprzejade.model.Schedule.ScheduleType;
+import jakprzejade.model2.DayType;
 import java.util.EnumMap;
 
 /**
@@ -11,13 +11,13 @@ public class Stop {
 
     private BusStop busStop;
     private Vehicle vehicle;
-    private EnumMap<Schedule.ScheduleType, Schedule> schedules;
+    private EnumMap<DayType, Schedule> schedules;
 
     public Stop(BusStop busStop, Vehicle vehicle) {
         this.busStop = busStop;
         this.vehicle = vehicle;
      
-        schedules = new EnumMap(ScheduleType.class);
+        schedules = new EnumMap(DayType.class);
     }
 
     public BusStop getBusStop() {
@@ -32,7 +32,7 @@ public class Stop {
         schedules.put(schedule.getType(), schedule);
     }
 
-    public Schedule getByScheduleType(ScheduleType type) {
+    public Schedule getByDayType(DayType type) {
         return schedules.get(type);
     }
 

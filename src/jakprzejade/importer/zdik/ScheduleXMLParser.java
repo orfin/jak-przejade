@@ -11,6 +11,7 @@ import jakprzejade.model.Schedule;
 import jakprzejade.model.ScheduleTime;
 import jakprzejade.model.Stop;
 import jakprzejade.model.Vehicle;
+import jakprzejade.model2.DayType;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import java.util.Iterator;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -97,10 +97,11 @@ public class ScheduleXMLParser extends DefaultHandler {
             
             stop = new Stop(busStop, vehicle);
             busStop.addStop(stop);
+            route.addStop(stop);
         }
         
         if (qName.equalsIgnoreCase("dzien")) {
-            schedule = new Schedule(getScheduleType(attributes.getValue("nazwa")));
+            schedule = new Schedule(getDayType(attributes.getValue("nazwa")));
         }
         
         if (qName.equalsIgnoreCase("godz")) {
@@ -163,19 +164,19 @@ public class ScheduleXMLParser extends DefaultHandler {
         return Vehicle.LineType.REGULAR;
     }
     
-    private static Schedule.ScheduleType getScheduleType(String typeString) {
+    private static DayType getDayType(String typeString) {
         if (typeString.equalsIgnoreCase("Sobota")) {
-            return Schedule.ScheduleType.SATURDAY;
+            return DayType.SUTURDAY;
         }
         
         if (typeString.equalsIgnoreCase("Niedziela")) {
-            return Schedule.ScheduleType.SUNDAY;
+            return DayType.SUNDAY;
         }
         
         if (typeString.equalsIgnoreCase("w dni robocze")) {
-            return Schedule.ScheduleType.WORKING_DAYS;
+            return DayType.WEEK_DAY;
         }
         
-        return Schedule.ScheduleType.WORKING_DAYS;
+        return DayType.WEEK_DAY;
     }
 }
