@@ -8,6 +8,8 @@ import jakprzejade.model2.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Container for knowledge of algorithm
@@ -51,6 +53,8 @@ public class Knowledge {
         end = new AlgorithmNode(new Node(END_NODE_ID, END_NODE_NAME, frr.to), this);
         nodesMap.put(end.getId(), end);
         nodes.add(end);
+        
+        start.addPaths(getEdgeByFootBetween(start, end));
     }
 
     private void addSutableNodes() {
@@ -61,7 +65,7 @@ public class Knowledge {
                 algorithmNode.setPathToEnd(getEdgeByFootBetween(algorithmNode, end));
                 nodesMap.put(algorithmNode.getId(), algorithmNode);
                 nodes.add(algorithmNode);
-                start.addPaths(getEdgeByFootBetween(algorithmNode, start));
+                start.addPaths(getEdgeByFootBetween(start, algorithmNode));
             }
         }
     }
