@@ -27,13 +27,15 @@ public class Algorithm implements RouteFinder {
         Knowledge knowledge = new Knowledge(request);
         knowledge.init();
         for (int i = 0; i < knowledge.getNodes().size(); i++) {
-            knowledge.getNodes().get(i).expand();
+            AlgorithmNode node = knowledge.getNodes().get(i);
+            node.expand();
             System.gc();
 //            Logger.getAnonymousLogger().info(String.format("Done: %d/%d", i, 
 //                    knowledge.getNodes().size()));
         }
         Logger.getAnonymousLogger().info("Expand all nodes");
-        return AlgorithmNode.getAllPathsFromStartToEnd(knowledge);
+        AlgorithmResult result = AlgorithmNode.getAllPathsFromStartToEnd(knowledge);
+        return result;
     }
 
     private FindRouteResponse transformToFindRouteResponse(AlgorithmResult input) {

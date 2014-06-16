@@ -53,4 +53,9 @@ public class Node implements Positionable{
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Node(%s: %s)", getName(), getId());
+    }
 }

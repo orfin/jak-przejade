@@ -22,33 +22,34 @@ public class AlgorithmNode implements Positionable {
 
     private final Node node;
     private final Knowledge k;
-    private final List<AlgorithmNode> observerts;
+//    private final List<AlgorithmNode> observerts;
     private Path pathToEnd;
 
     //dynamicly changed in runtime
-    private final ArrayList<Path> temporaryPathsList;
+    private final List<Path> temporaryPathsList;
     private AlgorithmNode previous;
     private Path bestPathToThis;
-    private int bestVisitTime = Integer.MAX_VALUE;
+    private int bestVisitTime;
     private List<Path> algorithmPaths;
 
     AlgorithmNode(Node node, Knowledge knowledge) {
         this.node = node;
         k = knowledge;
-        observerts = new ArrayList();
+//        observerts = new LinkedList();
         temporaryPathsList = new ArrayList();
     }
 
     public static AlgorithmResult getAllPathsFromStartToEnd(Knowledge k) {
         AlgorithmResult result = new AlgorithmResult();
         AlgorithmNode algorithmNode = k.getEnd();
-        result.nodes.add(algorithmNode.node);
+        result.nodes.add(algorithmNode);
         while (algorithmNode.previous != null) {
             result.paths.add(algorithmNode.bestPathToThis);
             algorithmNode = algorithmNode.previous;
-            result.nodes.add(algorithmNode.node);
+            result.nodes.add(algorithmNode);
         }
         Collections.reverse(result.paths);
+        Collections.reverse(result.nodes);
         return result;
     }
 
@@ -66,18 +67,20 @@ public class AlgorithmNode implements Positionable {
             List<Path> paths) {
         for (Path path : paths) {
             AlgorithmNode destination = k.getNodesMap().get(path.destination);
-            if (!bestPaths.containsKey(destination)) {
-                bestPaths.put(destination, path);
-            } else {
-                Path currentlyBestPath = bestPaths.get(destination);
-                if (!currentlyBestPath.dayType.match(path.dayType)) {
-                    if (path.dayType.isBefore(currentlyBestPath.dayType)) {
-                        bestPaths.put(destination, path);
-                    }
+            if (destination != null) {
+                if (!bestPaths.containsKey(destination)) {
+                    bestPaths.put(destination, path);
                 } else {
-                    if (path.getVisitTime(bestVisitTime)
-                            < currentlyBestPath.getVisitTime(bestVisitTime)) {
-                        bestPaths.put(destination, path);
+                    Path currentlyBestPath = bestPaths.get(destination);
+                    if (!currentlyBestPath.dayType.match(path.dayType)) {
+                        if (path.dayType.isBefore(currentlyBestPath.dayType)) {
+                            bestPaths.put(destination, path);
+                        }
+                    } else {
+                        if (path.getVisitTime(bestVisitTime)
+                                < currentlyBestPath.getVisitTime(bestVisitTime)) {
+                            bestPaths.put(destination, path);
+                        }
                     }
                 }
             }
@@ -86,52 +89,91 @@ public class AlgorithmNode implements Positionable {
     }
 
     public void visit(AlgorithmNode visitedFrom, Path path) {
-        if (this != k.getStart()) {
-            int vistitTime = path.getVisitTime(visitedFrom.bestVisitTime);
-            if (vistitTime < bestVisitTime) {
-                if (previous != null) {
-                    previous.observerts.remove(this);
-                }
-                previous = visitedFrom;
-                visitedFrom.observerts.add(this);
-                bestVisitTime = vistitTime;
-                bestPathToThis = path;
-                for (int i = 0; i < observerts.size(); i++) {
-                    recomputeWayTo(observerts.get(i));
+//        if (this == k.getEnd()) {
+//            System.out.println("Check it");
+//        }
+        if (previous == null || previous.previous != this) {
+            if (this != k.getStart()) {
+                int vistitTime = path.getVisitTime(visitedFrom.bestVisitTime);
+                if (vistitTime < bestVisitTime) {
+                    if (previous != null) {
+//                        previous.observerts.remove(this);
+                    }
+                    previous = visitedFrom;
+//                    visitedFrom.observerts.add(this);
+                    bestVisitTime = vistitTime;
+                    bestPathToThis = path;
+//                    for (AlgorithmNode observert : observerts) {
+//                        recomputeWayTo(observert);
+//                    }
+                    recomputeV2();
                 }
             }
         }
     }
 
-    public void recomputeWayTo(AlgorithmNode nextNode) {
-        Map<AlgorithmNode, Path> map = new HashMap();
-        map.put(this, bestPathToThis);
-        temporaryPathsList.clear();
-        for (Path path : algorithmPaths) {
-            if (nextNode == k.getNodesMap().get(path.destination)) {
-                temporaryPathsList.add(path);
+    private void recomputeV2() {
+        for (AlgorithmNode node : k.getNodes()) {
+            if (node.previous == this) {
+                Path bestPath = node.bestPathToThis;
+                int bestTIme = bestPath.getVisitTime(this.bestVisitTime);
+                for (Path path : this.algorithmPaths) {
+                    int vistitTime = path.getVisitTime(this.bestVisitTime);
+                    if (vistitTime < bestTIme) {
+                        bestTIme = vistitTime;
+                        bestPath = path;
+                    }
+                }
+                if (bestPath != node.bestPathToThis) {
+                    node.visit(this, bestPath);
+                }
             }
         }
-        Path bestPathToNextNode = getBestPaths(map, temporaryPathsList).get(nextNode);
-        nextNode.visit(this, bestPathToNextNode);
     }
 
+//    public void recomputeWayTo(AlgorithmNode nextNode) {
+//        Path bestPathToNextNode;
+//        if (nextNode != k.getEnd()) {
+//            Map<AlgorithmNode, Path> map = new HashMap();
+//            map.put(this, bestPathToThis);
+//            temporaryPathsList.clear();
+//            for (Path path : algorithmPaths) {
+//                if (nextNode == k.getNodesMap().get(path.destination)) {
+//                    temporaryPathsList.add(path);
+//                }
+//            }
+//            bestPathToNextNode = getBestPaths(map, temporaryPathsList).get(nextNode);
+//        } else {
+//            bestPathToNextNode = pathToEnd;
+//        }
+//        nextNode.visit(this, bestPathToNextNode);
+//    }
     public void init() {
         if (algorithmPaths == null) {
-            algorithmPaths = node.getPaths().stream()
-                    .filter(path
-                            -> k.getNodesMap().containsKey(path.destination)
-                            && (path.byFoot
-                            || (!k.isPossibleDayChange()
-                            && path.dayType.match(k.getStartDayType())
-                            && path.startTime >= k.getStartTime()
-                            && path.endTime <= k.getMaxEndTime())
-                            || (k.isPossibleDayChange()
-                            && ((path.dayType.match(k.getStartDayType())
-                            && path.startTime >= k.getStartTime())
-                            || (path.dayType.match(k.getMaxEndDayType())
-                            && path.endTime <= k.getMaxEndTime()))))
-                    ).collect(Collectors.toList());;
+            algorithmPaths = new ArrayList();
+            for (Path path : node.getPaths()) {
+                if (path.byFoot || (path.startTime > k.getStartTime()
+                        && path.endTime < k.getMaxEndTime())
+                        // remove day change option:
+                        && path.startTime < k.getMaxEndTime()
+                        && path.endTime > k.getStartTime()) {
+                    algorithmPaths.add(path);
+                }
+            }
+//            algorithmPaths = node.getPaths().stream()
+//                    .filter(path
+//                            -> k.getNodesMap().containsKey(path.destination)
+//                            && (path.byFoot
+//                            || (!k.isPossibleDayChange()
+//                            && path.dayType.match(k.getStartDayType())
+//                            && path.startTime >= k.getStartTime()
+//                            && path.endTime <= k.getMaxEndTime())
+//                            || (k.isPossibleDayChange()
+//                            && ((path.dayType.match(k.getStartDayType())
+//                            && path.startTime >= k.getStartTime())
+//                            || (path.dayType.match(k.getMaxEndDayType())
+//                            && path.endTime <= k.getMaxEndTime()))))
+//                    ).collect(Collectors.toList());
         }
     }
 
@@ -183,6 +225,6 @@ public class AlgorithmNode implements Positionable {
 
     @Override
     public String toString() {
-        return String.format("AlgorithmNode(%s: %s)", node.getName(), node.getId());
+        return node.toString();
     }
 }

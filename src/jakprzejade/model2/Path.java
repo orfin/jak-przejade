@@ -1,7 +1,6 @@
 package jakprzejade.model2;
 
 import jakprzejade.Utils;
-import jakprzejade.dynamicprogramming.AlgorithmNode;
 
 /**
  * Path between two nodes
@@ -10,7 +9,7 @@ import jakprzejade.dynamicprogramming.AlgorithmNode;
  */
 public class Path {
 
-    public final static String BY_FOOT_NAME = "Pieszo";
+    public final static String BY_FOOT_NAME = "P";
     public final static int ANY_TIME = -1;
     public final DayType dayType;
     public final String lineName;

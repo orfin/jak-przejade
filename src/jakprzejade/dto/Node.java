@@ -1,7 +1,5 @@
 package jakprzejade.dto;
 
-import java.util.Calendar;
-
 /**
  *
  * @author Antoni Orfin <orfin@poczta.fm>

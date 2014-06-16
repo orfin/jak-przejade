@@ -9,8 +9,7 @@ import jakprzejade.model2.Path;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 
 /**
  * Container for knowledge of algorithm
@@ -25,7 +24,7 @@ public class Knowledge {
     private static final String END_NODE_ID = "END";
     private final FindRouteRequest frr;
     private final HashMap<String, AlgorithmNode> nodesMap;
-    private final ArrayList<AlgorithmNode> nodes;
+    private final List<AlgorithmNode> nodes;
     private boolean possibleDayChange;
     private DayType startDayType;
     private DayType maxEndDayType;
@@ -42,31 +41,35 @@ public class Knowledge {
 
     public void init() {
         addStartAndEndNode(frr);
-        addSutableNodes();
         addTimeFrames(frr);
+        addSutableNodes();
         initializeNodes();
     }
 
     private void addStartAndEndNode(FindRouteRequest frr) {
         start = new AlgorithmNode(new Node(START_NODE_ID, START_NODE_NAME, frr.from), this);
-        start.setBestGetHereTime(startTime);
         nodesMap.put(start.getId(), start);
         nodes.add(start);
+
         end = new AlgorithmNode(new Node(END_NODE_ID, END_NODE_NAME, frr.to), this);
         nodesMap.put(end.getId(), end);
         nodes.add(end);
 
-        start.addPaths(Path.getPathByFootBetween(start, end));
+        Path fromStartToEnd = Path.getPathByFootBetween(start, end);
+        start.setPathToEnd(fromStartToEnd);
     }
 
     private void addSutableNodes() {
         Elipse searchArea = new Elipse(start.getPosition(), end.getPosition());
         for (Node node : GlobalKnowledge.getNodeList()) {
             if (nodeIsInElipse(searchArea, node)) {
+
                 AlgorithmNode algorithmNode = new AlgorithmNode(node, this);
-                algorithmNode.setPathToEnd(Path.getPathByFootBetween(algorithmNode, end));
+
                 nodesMap.put(algorithmNode.getId(), algorithmNode);
                 nodes.add(algorithmNode);
+
+                algorithmNode.setPathToEnd(Path.getPathByFootBetween(algorithmNode, end));
                 start.addPaths(Path.getPathByFootBetween(start, algorithmNode));
             }
         }
@@ -85,6 +88,8 @@ public class Knowledge {
         } else {
             maxEndDayType = startDayType;
         }
+        start.setBestGetHereTime(startTime);
+        end.setBestGetHereTime(start.getBestGetHereTime() + start.getPathToEnd().timeCost + 1);
     }
 
     private boolean nodeIsInElipse(Elipse e, Node node) {
@@ -94,6 +99,9 @@ public class Knowledge {
     private void initializeNodes() {
         for (AlgorithmNode algorithmNode : nodes) {
             algorithmNode.init();
+            if (algorithmNode != start && algorithmNode != end) {
+                algorithmNode.setBestGetHereTime(Integer.MAX_VALUE - 1);
+            }
         }
     }
 
@@ -121,7 +129,7 @@ public class Knowledge {
         return nodesMap;
     }
 
-    public ArrayList<AlgorithmNode> getNodes() {
+    public List<AlgorithmNode> getNodes() {
         return nodes;
     }
 
