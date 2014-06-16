@@ -13,6 +13,6 @@ public class DynamicProgrammingUtils {
     }
 
     public static int calculateByFoot(Position p1, Position p2) {
-        return (int) Math.round(distance(p1, p2) / 81);
+        return (int) Math.round(distance(p1, p2) / 65);
     }
 }
