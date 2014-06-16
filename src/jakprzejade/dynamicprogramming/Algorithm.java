@@ -4,8 +4,8 @@ import jakprzejade.dto.FindRouteRequest;
 import jakprzejade.dto.FindRouteResponse;
 import jakprzejade.model2.GlobalKnowledge;
 import jakprzejade.routefinder.RouteFinder;
-import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,24 +15,31 @@ public class Algorithm implements RouteFinder {
 
     @Override
     public FindRouteResponse findRoute(FindRouteRequest request) {
-        return transformToFindRouteResponse(execute(request));
+        long start = System.nanoTime();
+        AlgorithmResult ar = execute(request);
+        long end = System.nanoTime();
+        Logger.getAnonymousLogger().info(String.format("Alorith execution time: %d",
+                (end - start) / 1000000000));
+        return transformToFindRouteResponse(ar);
     }
 
     private AlgorithmResult execute(FindRouteRequest request) {
         Knowledge knowledge = new Knowledge(request);
         knowledge.init();
-        for (AlgorithmNode node : knowledge.getNodes()){
-            if (node != knowledge.getEnd()){
-                node.expand();
-            }
+        for (int i = 0; i < knowledge.getNodes().size(); i++) {
+            knowledge.getNodes().get(i).expand();
+            System.gc();
+//            Logger.getAnonymousLogger().info(String.format("Done: %d/%d", i, 
+//                    knowledge.getNodes().size()));
         }
+        Logger.getAnonymousLogger().info("Expand all nodes");
         return AlgorithmNode.getAllPathsFromStartToEnd(knowledge);
     }
 
     private FindRouteResponse transformToFindRouteResponse(AlgorithmResult input) {
         FindRouteResponse response = new FindRouteResponse();
         Map<String, jakprzejade.model2.Node> internalNodesMap = GlobalKnowledge.nodesMap;
-        
-        return null;
+
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

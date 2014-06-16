@@ -1,5 +1,8 @@
 package jakprzejade.model2;
 
+import jakprzejade.Utils;
+import jakprzejade.dynamicprogramming.AlgorithmNode;
+
 /**
  * Path between two nodes
  *
@@ -51,5 +54,10 @@ public class Path {
 
     public static int timeDifference(int startTime, int endTime) {
         return startTime < endTime ? endTime - startTime : 1440 - startTime + endTime;
+    }
+
+    public static Path getPathByFootBetween(Positionable begining, Positionable destination) {
+        return new Path(destination.getId(), Utils.calculateByFoot(
+                begining.getPosition(), destination.getPosition()));
     }
 }

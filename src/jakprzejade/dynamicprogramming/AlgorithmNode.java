@@ -4,22 +4,21 @@ import jakprzejade.model.GeoPoint;
 import jakprzejade.model2.Node;
 import jakprzejade.model2.Path;
 import jakprzejade.model2.Position;
+import jakprzejade.model2.Positionable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
  * @author KonradOliwer
  */
-public class AlgorithmNode {
+public class AlgorithmNode implements Positionable {
 
     private final Node node;
     private final Knowledge k;
@@ -27,6 +26,7 @@ public class AlgorithmNode {
     private Path pathToEnd;
 
     //dynamicly changed in runtime
+    private final ArrayList<Path> temporaryPathsList;
     private AlgorithmNode previous;
     private Path bestPathToThis;
     private int bestVisitTime = Integer.MAX_VALUE;
@@ -35,7 +35,8 @@ public class AlgorithmNode {
     AlgorithmNode(Node node, Knowledge knowledge) {
         this.node = node;
         k = knowledge;
-        observerts = new LinkedList();
+        observerts = new ArrayList();
+        temporaryPathsList = new ArrayList();
     }
 
     public static AlgorithmResult getAllPathsFromStartToEnd(Knowledge k) {
@@ -52,8 +53,6 @@ public class AlgorithmNode {
     }
 
     public void expand() {
-        Logger.getAnonymousLogger().log(Level.INFO, String.format("Expanding node %s", node.getName()));
-        init();
         Map<AlgorithmNode, Path> bestPaths = getBestPaths(new HashMap(), algorithmPaths);
         for (Entry<AlgorithmNode, Path> entry : bestPaths.entrySet()) {
             entry.getKey().visit(this, entry.getValue());
@@ -65,7 +64,6 @@ public class AlgorithmNode {
 
     private Map<AlgorithmNode, Path> getBestPaths(Map<AlgorithmNode, Path> bestPaths,
             List<Path> paths) {
-        Logger.getAnonymousLogger().log(Level.INFO, String.format("%s getBestPaths: start", node.getName()));
         for (Path path : paths) {
             AlgorithmNode destination = k.getNodesMap().get(path.destination);
             if (!bestPaths.containsKey(destination)) {
@@ -84,41 +82,41 @@ public class AlgorithmNode {
                 }
             }
         }
-        Logger.getAnonymousLogger().log(Level.INFO, String.format("%s getBestPaths: finish", node.getName()));
         return bestPaths;
     }
 
     public void visit(AlgorithmNode visitedFrom, Path path) {
-        Logger.getAnonymousLogger().log(Level.INFO, String.format("%s visitied from %s: start", node.getName(), visitedFrom.node.getName()));
-        int vistitTime = path.getVisitTime(bestVisitTime);
-        if (vistitTime < bestVisitTime) {
-            if (previous != null) {
-                previous.observerts.remove(this);
+        if (this != k.getStart()) {
+            int vistitTime = path.getVisitTime(visitedFrom.bestVisitTime);
+            if (vistitTime < bestVisitTime) {
+                if (previous != null) {
+                    previous.observerts.remove(this);
+                }
+                previous = visitedFrom;
+                visitedFrom.observerts.add(this);
+                bestVisitTime = vistitTime;
+                bestPathToThis = path;
+                for (int i = 0; i < observerts.size(); i++) {
+                    recomputeWayTo(observerts.get(i));
+                }
             }
-            previous = visitedFrom;
-            visitedFrom.observerts.add(this);
-            bestVisitTime = vistitTime;
-            bestPathToThis = path;
-            observerts.stream().forEach((observingNode) -> {
-                recomputeWayTo(observingNode);
-            });
         }
-        Logger.getAnonymousLogger().log(Level.INFO, String.format("%s visitied from %s: end", node.getName(), visitedFrom.node.getName()));
     }
 
     public void recomputeWayTo(AlgorithmNode nextNode) {
-        Logger.getAnonymousLogger().log(Level.INFO, String.format("%s recomputeWayTo %s", node.getName(), nextNode.node.getName()));
         Map<AlgorithmNode, Path> map = new HashMap();
         map.put(this, bestPathToThis);
-        Path bestPathToNextNode = getBestPaths(map,
-                algorithmPaths.stream()
-                .filter(path -> nextNode == k.getNodesMap().get(path.destination))
-                .collect(Collectors.toList())
-        ).get(nextNode);
+        temporaryPathsList.clear();
+        for (Path path : algorithmPaths) {
+            if (nextNode == k.getNodesMap().get(path.destination)) {
+                temporaryPathsList.add(path);
+            }
+        }
+        Path bestPathToNextNode = getBestPaths(map, temporaryPathsList).get(nextNode);
         nextNode.visit(this, bestPathToNextNode);
     }
 
-    private void init() {
+    public void init() {
         if (algorithmPaths == null) {
             algorithmPaths = node.getPaths().stream()
                     .filter(path
@@ -134,14 +132,15 @@ public class AlgorithmNode {
                             || (path.dayType.match(k.getMaxEndDayType())
                             && path.endTime <= k.getMaxEndTime()))))
                     ).collect(Collectors.toList());;
-            Logger.getAnonymousLogger().log(Level.INFO, String.format("%s init()", String.format("%s initialized", node.getName())));
         }
     }
 
+    @Override
     public String getId() {
         return node.getId();
     }
 
+    @Override
     public Position getPosition() {
         return node.getPosition();
     }
@@ -180,5 +179,10 @@ public class AlgorithmNode {
 
     public void setPathToEnd(Path pathToEnd) {
         this.pathToEnd = pathToEnd;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("AlgorithmNode(%s: %s)", node.getName(), node.getId());
     }
 }

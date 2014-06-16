@@ -14,8 +14,9 @@ class Elipse {
 
     Elipse(Position start, Position end) {
         center = new Position((start.x + end.x) / 2, (start.y + end.y) / 2);
-        a = DynamicProgrammingUtils.distance(start, end);
-        b = a / 2;
+        int distance = (int) start.distanceTo(end);
+        a = distance * 3 / 2;
+        b = distance / 3;
     }
 
     boolean isInElipse(Position p) {

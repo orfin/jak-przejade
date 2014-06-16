@@ -48,4 +48,17 @@ public enum DayType {
                 return DayType.WEEK_DAY;
         }
     }
+
+    public DayType nextDayType() {
+        switch (this) {
+            case WEEK_DAY:
+                return SUTURDAY;
+            case SUTURDAY:
+                return SUNDAY;
+            case SUNDAY:
+                return WEEK_DAY;
+            default:
+                throw new RuntimeException("ANY doesn't have next day.");
+        }
+    }
 }

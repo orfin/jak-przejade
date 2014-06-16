@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author KonradOliwer
  */
-public class Node {
+public class Node implements Positionable{
 
     private final String id;
     private final Position position;

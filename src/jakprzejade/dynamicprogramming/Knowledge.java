@@ -1,5 +1,6 @@
 package jakprzejade.dynamicprogramming;
 
+import jakprzejade.Utils;
 import jakprzejade.dto.FindRouteRequest;
 import jakprzejade.model2.DayType;
 import jakprzejade.model2.GlobalKnowledge;
@@ -43,6 +44,7 @@ public class Knowledge {
         addStartAndEndNode(frr);
         addSutableNodes();
         addTimeFrames(frr);
+        initializeNodes();
     }
 
     private void addStartAndEndNode(FindRouteRequest frr) {
@@ -53,8 +55,8 @@ public class Knowledge {
         end = new AlgorithmNode(new Node(END_NODE_ID, END_NODE_NAME, frr.to), this);
         nodesMap.put(end.getId(), end);
         nodes.add(end);
-        
-        start.addPaths(getEdgeByFootBetween(start, end));
+
+        start.addPaths(Path.getPathByFootBetween(start, end));
     }
 
     private void addSutableNodes() {
@@ -62,22 +64,17 @@ public class Knowledge {
         for (Node node : GlobalKnowledge.getNodeList()) {
             if (nodeIsInElipse(searchArea, node)) {
                 AlgorithmNode algorithmNode = new AlgorithmNode(node, this);
-                algorithmNode.setPathToEnd(getEdgeByFootBetween(algorithmNode, end));
+                algorithmNode.setPathToEnd(Path.getPathByFootBetween(algorithmNode, end));
                 nodesMap.put(algorithmNode.getId(), algorithmNode);
                 nodes.add(algorithmNode);
-                start.addPaths(getEdgeByFootBetween(start, algorithmNode));
+                start.addPaths(Path.getPathByFootBetween(start, algorithmNode));
             }
         }
     }
 
-    private Path getEdgeByFootBetween(AlgorithmNode begining, AlgorithmNode destination) {
-        return new Path(destination.getId(), DynamicProgrammingUtils.calculateByFoot(
-                begining.getPosition(), destination.getPosition()));
-    }
-
     private void addTimeFrames(FindRouteRequest frr) {
         startTime = frr.date.get(Calendar.HOUR) * 60 + frr.date.get(Calendar.MINUTE);
-        maxEndTime = startTime + DynamicProgrammingUtils
+        maxEndTime = startTime + Utils
                 .calculateByFoot(start.getPosition(), end.getPosition());
         possibleDayChange = maxEndTime > 1440;
 
@@ -92,6 +89,12 @@ public class Knowledge {
 
     private boolean nodeIsInElipse(Elipse e, Node node) {
         return e.isInElipse(node.getPosition());
+    }
+
+    private void initializeNodes() {
+        for (AlgorithmNode algorithmNode : nodes) {
+            algorithmNode.init();
+        }
     }
 
     public boolean isPossibleDayChange() {
