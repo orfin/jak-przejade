@@ -44,7 +44,7 @@ public class DjNode implements Positionable {
     }
 
     List<Path> bestPaths(Map<String, DjNode> nodesMap, DayType dayType) {
-        return getBestPaths(nodesMap, node.getPaths());
+        return getBestPaths(nodesMap, node.getPaths(), dayType);
     }
 
     private List<Path> getBestPaths(Map<String, DjNode> nodesMap, List<Path> paths,
