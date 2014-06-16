@@ -1,8 +1,8 @@
 package jakprzejade;
 
-import jakprzejade.dj.Dj;
 import jakprzejade.dto.FindRouteRequest;
 import jakprzejade.dto.FindRouteResponse;
+import jakprzejade.routefinder.dj.Dj;
 import jakprzejade.model.*;
 import jakprzejade.model2.GlobalKnowledge;
 import jakprzejade.routefinder.RouteFinder;
@@ -30,10 +30,10 @@ public class JakPrzejade {
         request.from = new GeoPoint(16.99930429458618, 51.08522791325631);
         request.to = new GeoPoint(17.061874866485596, 51.10746280207861);
         request.date = Calendar.getInstance();
-        request.date.set(request.date.get(Calendar.YEAR), 
-                request.date.get(Calendar.MONTH), 
+        request.date.set(request.date.get(Calendar.YEAR),
+                request.date.get(Calendar.MONTH),
                 request.date.get(Calendar.DAY_OF_MONTH),
-                11, 
+                11,
                 15);
         RouteFinder routeFinder = new Dj();
         FindRouteResponse response = routeFinder.findRoute(request);

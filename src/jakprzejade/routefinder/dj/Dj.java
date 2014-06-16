@@ -1,8 +1,7 @@
-package jakprzejade.dj;
+package jakprzejade.routefinder.dj;
 
 import jakprzejade.dto.FindRouteRequest;
 import jakprzejade.dto.FindRouteResponse;
-import jakprzejade.dynamicprogramming.Elipse;
 import jakprzejade.model2.DayType;
 import jakprzejade.model2.GlobalKnowledge;
 import jakprzejade.model2.Node;
@@ -96,10 +95,21 @@ public class Dj implements RouteFinder {
     private void explore(DjNode node, Path path) {
         DjNode checked = nodesMap.get(path.destination);
         if (checked.value > node.value + path.timeCost) {
-            checked.previous = node;
-            checked.value = node.value + path.timeCost;
-            checked.previousPath = path;
+            improveNode(checked, node, path);
         }
+    }
+
+    private void visitAllNodesFromStart() {
+        for (DjNode node : nodes) {
+            improveNode(node, start, Path.getPathByFootBetween(start, node));
+        }
+        improveNode(end, start, Path.getPathByFootBetween(start, end));
+    }
+
+    private void improveNode(DjNode node, DjNode from, Path path) {
+        node.previous = from;
+        node.value = from.value + path.timeCost;
+        node.previousPath = path;
     }
 
     private DjNode findMinNode() {
@@ -119,19 +129,6 @@ public class Dj implements RouteFinder {
         addNodes();
         visitAllNodesFromStart();
         setDates(frr);
-    }
-
-    private void visitAllNodesFromStart() {
-        for (DjNode node : nodes) {
-            Path path = Path.getPathByFootBetween(start, node);
-            node.previous = start;
-            node.value = start.value + path.timeCost;
-            node.previousPath = path;
-        }
-        Path path = Path.getPathByFootBetween(start, end);
-        end.previous = start;
-        end.value = start.value + path.timeCost;
-        end.previousPath = path;
     }
 
     private void createStartAndEnd(FindRouteRequest frr) {

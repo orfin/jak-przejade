@@ -1,6 +1,5 @@
-package jakprzejade.dj;
+package jakprzejade.routefinder.dj;
 
-import jakprzejade.dynamicprogramming.AlgorithmNode;
 import jakprzejade.model2.DayType;
 import jakprzejade.model2.Node;
 import jakprzejade.model2.Path;

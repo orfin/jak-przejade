@@ -1,4 +1,4 @@
-package jakprzejade.dynamicprogramming;
+package jakprzejade.routefinder.dj;
 
 import jakprzejade.model2.Position;
 

@@ -4,7 +4,6 @@
  */
 package jakprzejade;
 
-import jakprzejade.dynamicprogramming.Knowledge;
 import jakprzejade.importer.Repository;
 import jakprzejade.importer.RepositoryToKnowledgeConverter;
 import jakprzejade.importer.zdik.ZdikImporter;
