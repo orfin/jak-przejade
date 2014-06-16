@@ -51,11 +51,13 @@ public class Dj implements RouteFinder {
             dtoNode.time = String.format("%d:%d", result.get(i).value / 60, result.get(i).value % 60);
             int j = i + 1;
             if (j < result.size()) {
-                if (rout.paths.size() > 0 && result.get(j).previousPath.lineName
+                if (rout.paths.isEmpty() || !result.get(j).previousPath.lineName
                         .equals(rout.paths.get(index).vehicleName)) {
-                } else {
                     jakprzejade.dto.Path dtoPath = new jakprzejade.dto.Path();
                     dtoPath.vehicleName = result.get(j).previousPath.lineName;
+                    if (index >= 0) {
+                        rout.paths.get(index).nodes.add(dtoNode);
+                    }
                     rout.paths.add(++index, dtoPath);
                 }
             }

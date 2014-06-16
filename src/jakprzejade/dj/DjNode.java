@@ -53,6 +53,12 @@ public class DjNode implements Positionable {
         for (Path path : paths) {
             DjNode destination = nodesMap.get(path.destination);
             if (destination != null) {
+                if (value > 1440) {
+                    if (!dayType.equals(DayType.ANY)) {
+                        dayType = dayType.nextDayType();
+                    }
+                    value -= 1440;
+                }
                 if (path.dayType.match(dayType)) {
                     if (!bestPaths.containsKey(destination)) {
                         bestPaths.put(destination, path);
@@ -73,13 +79,6 @@ public class DjNode implements Positionable {
         return list;
     }
 
-//    private boolean dayChange(int value){
-//        return value > 1440;
-//    }
-//    
-//    private boolean dayChange(int value){
-//        return value > 1440;
-//    }
     @Override
     public String toString() {
         return node.toString();
