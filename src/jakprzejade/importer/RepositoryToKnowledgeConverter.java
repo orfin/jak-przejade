@@ -40,7 +40,6 @@ public class RepositoryToKnowledgeConverter {
     }
     
     public void makeNodes() {
-        
         for (BusStop busStop: repo.busStops.values()) {
             if (busStop.getLocation() == null) {
                 continue;
@@ -80,6 +79,11 @@ public class RepositoryToKnowledgeConverter {
                 int endTime = getNearestTime(nextStop, startTime, dayType);
                 int timeCost = Path.timeDifference(startTime, endTime);
 
+                // strange case with bus stops without times
+                if (endTime == -1) {
+                    continue;
+                }
+                
                 Path path = new Path(dayType, nextStop.getBusStop().getId(), stop.getVehicle().getName(), timeCost, startTime, endTime);
 
                 nodeStart.addPaths(path);
@@ -92,22 +96,26 @@ public class RepositoryToKnowledgeConverter {
             return -1;
         }
         
-        int nearestTime = -1;
+        int bestTime = -1;
+        int bestTimeDiff = Integer.MAX_VALUE;
 
         for (ScheduleTime time : nextStop.getByDayType(type).getTimes().values()) {
             for (Integer minute : time.getMinutes()) {
-                int unifiedTime = Path.toUnifiedTime(time.getHour(), minute);
-
-                if (nearestTime == -1) {
-                    nearestTime = unifiedTime;
-                } else {
-                    if (currentTime < unifiedTime && nearestTime > unifiedTime) {
-                        nearestTime = unifiedTime;
-                    }
+                int endTime = Path.toUnifiedTime(time.getHour(), minute);
+                int timeDiff = Path.timeDifference(currentTime, endTime);
+                
+                if (timeDiff < bestTimeDiff) {
+                    bestTime = endTime;
+                    bestTimeDiff = timeDiff;
+                }
+                
+                // if just one minute diff, there isn't need to find better one
+                if (bestTimeDiff == 1) {
+                    return bestTime;
                 }
             }
         }
 
-        return nearestTime;
+        return bestTime;
     }
 }
