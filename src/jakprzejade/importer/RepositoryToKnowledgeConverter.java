@@ -40,8 +40,7 @@ public class RepositoryToKnowledgeConverter {
     }
 
     public void makeNodes() {
-
-        for (BusStop busStop : repo.busStops.values()) {
+        for (BusStop busStop: repo.busStops.values()) {
             if (busStop.getLocation() == null) {
                 continue;
             }

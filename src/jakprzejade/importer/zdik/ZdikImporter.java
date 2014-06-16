@@ -20,6 +20,8 @@ import java.util.logging.Level;
  */
 public class ZdikImporter extends Importer {
 
+    private static final String JUST_TEST = null; // nazwa paczki z rozkładami, np "20140615-160134"
+    
     private static final String BASE_PATH = jakprzejade.Configuration.IMPORTER_ZDIK_PATH;
     private static final String URL_SCHEDULES = "http://www.um.wroc.pl/zdikzip/rozklady_xml.zip";
     private static final String URL_LOCATIONS = "http://geoportal.wroclaw.pl/www/pliki/KomunikacjaZbiorowa/SlupkiWspolrzedne.txt";
@@ -37,20 +39,22 @@ public class ZdikImporter extends Importer {
 
         makeDir();
 
-        getLogger().log(Level.INFO, "Downloading schedules from \"{0}\" to \"{1}\"", new String[]{URL_SCHEDULES, zipName});
+        if (JUST_TEST == null) {
+            getLogger().log(Level.INFO, "Downloading schedules from \"{0}\" to \"{1}\"", new String[]{URL_SCHEDULES, zipName});
 
-        timeStart = System.currentTimeMillis();
-        org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL_SCHEDULES), new File(zipName));
+            timeStart = System.currentTimeMillis();
+            org.apache.commons.io.FileUtils.copyURLToFile(new URL(URL_SCHEDULES), new File(zipName));
 
-        getLogger().log(Level.INFO, "Downloading completed in {0} ms", "" + getTimeTotal(timeStart));
+            getLogger().log(Level.INFO, "Downloading completed in {0} ms", "" + getTimeTotal(timeStart));
 
 
-        getLogger().log(Level.INFO, "Extracting ZIP \"{0}\" to \"{1}\"", new String[]{zipName, outputName});
+            getLogger().log(Level.INFO, "Extracting ZIP \"{0}\" to \"{1}\"", new String[]{zipName, outputName});
 
-        timeStart = System.currentTimeMillis();
-        ZipExtractor.extract(zipName, outputName, true);
+            timeStart = System.currentTimeMillis();
+            ZipExtractor.extract(zipName, outputName, true);
 
-        getLogger().log(Level.INFO, "Extracting ZIP completed in {0} ms", "" + getTimeTotal(timeStart));
+            getLogger().log(Level.INFO, "Extracting ZIP completed in {0} ms", "" + getTimeTotal(timeStart));
+        }
 
 
         getLogger().log(Level.INFO, "Starting creating repository...");
@@ -85,10 +89,13 @@ public class ZdikImporter extends Importer {
     }
 
     private String getDateString() {
-        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        Date date = new Date();
-
-        return dateFormat.format(date);
+        if (JUST_TEST == null) {
+            DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+            Date date = new Date();
+            return dateFormat.format(date);
+        }
+        
+        return JUST_TEST;
     }
 
     private void makeDir() {
