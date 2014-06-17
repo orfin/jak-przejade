@@ -47,7 +47,7 @@ public class Dj implements RouteFinder {
             dtoNode.lat = result.get(i).node.getGeoPoint().getLatitude();
             dtoNode.lon = result.get(i).node.getGeoPoint().getLongitude();
             dtoNode.name = result.get(i).node.getName();
-            dtoNode.time = String.format("%d:%d", result.get(i).value / 60, result.get(i).value % 60);
+            dtoNode.time = String.format("%02d:%02d", result.get(i).value / 60, result.get(i).value % 60);
             int j = i + 1;
             if (j < result.size()) {
                 if (rout.paths.isEmpty() || !result.get(j).previousPath.lineName
