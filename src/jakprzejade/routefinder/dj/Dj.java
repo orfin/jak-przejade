@@ -136,7 +136,7 @@ public class Dj implements RouteFinder {
         nodesMap.put(end.getId(), end);
 
         start = new DjNode(new Node(START_NODE_ID, START_NODE_NAME, frr.from), end);
-        start.value = frr.date.get(Calendar.HOUR) * 60 + frr.date.get(Calendar.MINUTE);
+        start.value = frr.date.get(Calendar.HOUR_OF_DAY) * 60 + frr.date.get(Calendar.MINUTE);
         nodesMap.put(start.getId(), start);
     }
 
