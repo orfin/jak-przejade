@@ -8,13 +8,8 @@ import jakprzejade.importer.Importer;
 import jakprzejade.importer.Repository;
 import jakprzejade.model.BusStop;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
-import java.util.Collection;
 import java.util.logging.Level;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FileFilterUtils;
 
 /**
  * Sample schema:

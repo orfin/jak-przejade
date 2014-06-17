@@ -14,8 +14,6 @@ import jakprzejade.model.Vehicle;
 import jakprzejade.model2.DayType;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;

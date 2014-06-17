@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author KonradOliwer
  */
-public class Node {
+public class Node implements Positionable{
 
     private final String id;
     private final Position position;
@@ -52,5 +52,10 @@ public class Node {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Node(%s: %s)", getName(), getId());
     }
 }

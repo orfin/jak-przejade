@@ -1,5 +1,7 @@
 package jakprzejade.model2;
 
+import jakprzejade.Utils;
+
 /**
  * Path between two nodes
  *
@@ -7,7 +9,7 @@ package jakprzejade.model2;
  */
 public class Path {
 
-    public final static String BY_FOOT_NAME = "Pieszo";
+    public final static String BY_FOOT_NAME = "P";
     public final static int ANY_TIME = -1;
     public final DayType dayType;
     public final String lineName;
@@ -51,5 +53,10 @@ public class Path {
 
     public static int timeDifference(int startTime, int endTime) {
         return startTime < endTime ? endTime - startTime : 1440 - startTime + endTime;
+    }
+
+    public static Path getPathByFootBetween(Positionable begining, Positionable destination) {
+        return new Path(destination.getId(), Utils.calculateByFoot(
+                begining.getPosition(), destination.getPosition()));
     }
 }

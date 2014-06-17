@@ -10,8 +10,8 @@ import jakprzejade.model.GeoPoint;
 public class Position {
 
     private static final GeoPoint base = new GeoPoint(17.0321038, 51.1098308);
-    private static final double xFactor = 69999.99;
-    private static final double yFactor = 11113.29;
+    private static final double xFactor = 68510;
+    private static final double yFactor = 111269;
     public double x; //[m]
     public double y; //[m]
 
@@ -21,7 +21,11 @@ public class Position {
     }
 
     public Position(GeoPoint p) {
-        y = (base.getLatitude() - p.getLatitude()) * yFactor;
         x = (base.getLongitude() - p.getLongitude()) * xFactor;
+        y = (base.getLatitude() - p.getLatitude()) * yFactor;
+    }
+
+    public double distanceTo(Position p) {
+        return Math.sqrt(Math.pow(this.x - p.x, 2) + Math.pow(this.y - p.y, 2));
     }
 }
