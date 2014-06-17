@@ -2,6 +2,7 @@ package jakprzejade;
 
 import jakprzejade.dto.FindRouteRequest;
 import jakprzejade.dto.FindRouteResponse;
+import jakprzejade.importer.Importer;
 import jakprzejade.routefinder.dj.Dj;
 import jakprzejade.model.*;
 import jakprzejade.model2.GlobalKnowledge;
@@ -35,8 +36,15 @@ public class JakPrzejade {
                 request.date.get(Calendar.DAY_OF_MONTH),
                 11,
                 15);
+        
+        long timeStart = System.currentTimeMillis();
+        
         RouteFinder routeFinder = new Dj();
         FindRouteResponse response = routeFinder.findRoute(request);
+        
+        Importer.getLogger().log(Level.INFO, "Route found in {0} ms", "" + Importer.getTimeTotal(timeStart));
+        
+        System.out.println(response.toString());
 //        for (BusStop busStop : repo.busStops.values()) {
 //            System.out.println(busStop);
 //        }

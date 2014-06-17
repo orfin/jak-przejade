@@ -9,4 +9,9 @@ import java.util.ArrayList;
 public class Route {
     public int totalTime;
     public ArrayList<Path> paths = new ArrayList<Path>();
+
+    @Override
+    public String toString() {
+        return "Route{" + "totalTime=" + totalTime + ", paths=" + paths + '}';
+    }
 }

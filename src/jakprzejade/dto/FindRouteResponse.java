@@ -10,4 +10,9 @@ import java.util.ArrayList;
 public class FindRouteResponse {
     
     public ArrayList<Route> routes = new ArrayList<Route>();
+
+    @Override
+    public String toString() {
+        return routes.toString();
+    }
 }

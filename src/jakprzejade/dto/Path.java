@@ -15,4 +15,9 @@ public class Path {
     public String vehicleType;
     
     public ArrayList<Node> nodes = new ArrayList<Node>();
+
+    @Override
+    public String toString() {
+        return "Path{" + "vehicleName=" + vehicleName + ", vehicleType=" + vehicleType + ", nodes=" + nodes + '}';
+    }
 }
